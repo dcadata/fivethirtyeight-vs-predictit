@@ -103,12 +103,9 @@ def compare_fte_and_pi() -> None:
     pi_data = get_pi_data()
     merged = pd.concat(merge_data(pi_data, chamber) for chamber in _CHAMBERS['names'])
     merged = add_profit_columns_to_merged(merged)
-    summary = merged.groupby('buyActionRec', as_index=False).murl.count().sort_values(
-        by='murl', ascending=False).rename(columns=dict(murl='count'))
 
     html = open('templates/page.html').read().format(
         data='\n'.join(open('templates/item.html').read().format(**record) for record in merged.to_dict('records')),
-        summary=summary.to_html(index=False),
         last_updated=datetime.now().strftime('%d %B %Y %H:%M'),
     )
     with open('index.html', 'w') as f:
