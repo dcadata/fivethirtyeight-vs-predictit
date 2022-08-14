@@ -94,10 +94,13 @@ def add_profit_columns_to_merged(merged: pd.DataFrame) -> pd.DataFrame:
     merged = merged.reset_index(drop=True)
     transposed = merged[[f'profit_{i}' for i in buy_columns]].transpose()
     addnl = [dict(
-        buyActionRec=transposed[i].idxmax().replace('profit_best', '').replace('Cost', ''),
+        buyActionRec=re.search('profit_best(Buy)(Yes|No)Cost([DR])', transposed[i].idxmax()),
         buyActionProfit=transposed[i].max(),
     ) for i in transposed]
+
     merged = merged.join(pd.DataFrame(addnl))
+    merged.buyActionRec = merged.buyActionRec.apply(lambda x: x.groups()).apply(
+        lambda x: '{} {} on the {}'.format(x[0], x[1], dict(D='Democrat', R='Republican')[x[2]]))
     merged = merged[merged.buyActionProfit >= _MIN_PROFIT_PER_SHARE].sort_values('buyActionProfit', ascending=False)
     return merged
 
@@ -106,11 +109,20 @@ def compare_fte_and_pi() -> None:
     pi_data = get_pi_data()
     merged = pd.concat(merge_fte_and_pi(pi_data, chamber) for chamber in _CHAMBERS['names'])
     merged = add_profit_columns_to_merged(merged)
+    summary = merged.groupby('buyActionRec', as_index=False).agg(dict(
+        murl='count', seat='</li><li>'.join)).sort_values(by='murl', ascending=False)
+    forecast_exp_title = _FORECAST_EXPRESSION[1:].title()
 
+    items = [open('templates/market_item.html').read().format(
+        **i, forecast_expression=forecast_exp_title) for i in merged.to_dict('records')]
+    items.insert(5, open('templates/notes_item.html').read().format(
+        forecast_expression=forecast_exp_title, min_profit_per_share=_MIN_PROFIT_PER_SHARE))
+    links_idx = 9
     html = open('templates/page.html').read().format(
-        forecast_expression=_FORECAST_EXPRESSION[1:],
-        min_profit_per_share=_MIN_PROFIT_PER_SHARE,
-        data='\n'.join(open('templates/item.html').read().format(**record) for record in merged.to_dict('records')),
+        data0='\n'.join(items[:links_idx]),
+        data1='\n'.join(items[links_idx:]),
+        summary='\n'.join(open('templates/summary_item.html').read().format(**i) for i in summary.to_dict('records')),
+        update_interval='hourly',
         last_updated=datetime.now().strftime('%d %B %Y %H:%M'),
     )
     with open('index.html', 'w') as f:
