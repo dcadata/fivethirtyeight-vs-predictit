@@ -9,8 +9,8 @@ _MIN_PROFIT_PER_SHARE = 0.05
 _CHAMBERS = dict(
     names=['senate', 'governor'],
     patterns=dict(
-        senate='Which party will win the ([A-Z]{2}) Senate race',
-        governor='Which party will win ([A-Z]{2}) governor\'s race?',
+        senate='Which party will win the ([A-Z]{2}) (Sen)ate race',
+        governor='Which party will win ([A-Z]{2}) (gov)ernor\'s race?',
     ),
     filenames=dict(
         senate='senate_state_toplines_2022.csv',
@@ -41,8 +41,9 @@ def get_pi_data() -> pd.DataFrame:
 def _filter_pi_data(pi_data: pd.DataFrame, chamber: str) -> pd.DataFrame:
     pattern = _CHAMBERS['patterns'][chamber]
     pi_data = pi_data.rename(columns=dict((i, i.replace('cbest', 'best')) for i in pi_data.columns))
-    pi_data['state'] = pi_data.mshortName.apply(lambda x: re.search(pattern, x)).apply(
-        lambda x: x.group(1) if x else None)
+    shortname_with_pattern = pi_data.mshortName.apply(lambda x: re.search(pattern, x))
+    pi_data['state'] = shortname_with_pattern.apply(lambda x: x.group(1) if x else None)
+    pi_data['seat'] = shortname_with_pattern.apply(lambda x: '-'.join(x.groups()).upper() if x else None)
     return pi_data
 
 
@@ -64,7 +65,7 @@ def merge_data(pi_data: pd.DataFrame, chamber: str) -> pd.DataFrame:
 
     _separate_by_party = lambda party: pi[pi.cname == party].drop(columns='cname')
     pi = _separate_by_party('Democratic').merge(_separate_by_party('Republican'), on=[
-        'mshortName', 'murl', 'state'], suffixes=('D', 'R'))
+        'mshortName', 'murl', 'state', 'seat'], suffixes=('D', 'R'))
 
     merged = (
         pi.merge(fte, on='state')
