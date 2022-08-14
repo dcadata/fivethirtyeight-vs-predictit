@@ -39,7 +39,7 @@ def get_pi_data() -> pd.DataFrame:
 
 def _filter_pi_data(pi_data: pd.DataFrame, chamber: str) -> pd.DataFrame:
     pattern = _CHAMBERS['patterns'][chamber]
-    pi_data = pi_data.rename(columns=dict((i, i.replace('cbest', '')) for i in pi_data.columns))
+    pi_data = pi_data.rename(columns=dict((i, i.replace('cbest', 'best')) for i in pi_data.columns))
     pi_data['state'] = pi_data.mshortName.apply(lambda x: re.search(pattern, x)).apply(
         lambda x: x.group(1) if x else None)
     return pi_data
@@ -67,31 +67,31 @@ def merge_data(pi_data: pd.DataFrame, chamber: str) -> pd.DataFrame:
 
     merged = (
         pi.merge(fte, on='state')
-            .drop(columns=['state', 'SellYesCostD', 'SellNoCostR', 'SellYesCostR', 'SellNoCostD'])
+            .drop(columns=['state', 'bestSellYesCostD', 'bestSellNoCostR', 'bestSellYesCostR', 'bestSellNoCostD'])
             .rename(columns=dict(winner_Dparty='fteD', winner_Rparty='fteR'))
     )
     return merged
 
 
 def add_profit_columns_to_merged(merged: pd.DataFrame) -> pd.DataFrame:
-    buy_columns = ('BuyYesCostD', 'BuyNoCostR', 'BuyYesCostR', 'BuyNoCostD')
+    buy_columns = ('bestBuyYesCostD', 'bestBuyNoCostR', 'bestBuyYesCostR', 'bestBuyNoCostD')
 
-    merged['profitBuyYesCostD'] = merged.fteD - merged.BuyYesCostD
-    merged['profitBuyNoCostR'] = merged.fteD - merged.BuyNoCostR
-    merged['profitBuyYesCostR'] = merged.fteR - merged.BuyYesCostR
-    merged['profitBuyNoCostD'] = merged.fteR - merged.BuyNoCostD
+    merged['profit_bestBuyYesCostD'] = merged.fteD - merged.bestBuyYesCostD
+    merged['profit_bestBuyNoCostR'] = merged.fteD - merged.bestBuyNoCostR
+    merged['profit_bestBuyYesCostR'] = merged.fteR - merged.bestBuyYesCostR
+    merged['profit_bestBuyNoCostD'] = merged.fteR - merged.bestBuyNoCostD
 
     for col in buy_columns:
         # merged[f'roi{col}'] = (merged[f'profit{col}'] / merged[col]).fillna(0).apply(lambda x: int(round(x * 100)))
-        merged[f'profit{col}'] = merged[f'profit{col}'].round(2)
+        merged[f'profit_{col}'] = merged[f'profit_{col}'].round(2)
 
     for col in ('fteD', 'fteR'):
         merged[col] = merged[col].round(2)
 
     merged = merged.reset_index(drop=True)
-    transposed = merged[[f'profit{i}' for i in buy_columns]].transpose()
+    transposed = merged[[f'profit_{i}' for i in buy_columns]].transpose()
     addnl = [dict(
-        buyActionRec=transposed[i].idxmax().replace('profit', '').replace('Cost', ''),
+        buyActionRec=transposed[i].idxmax().replace('profit_best', '').replace('Cost', ''),
         buyActionProfit=transposed[i].max(),
     ) for i in transposed]
     merged = merged.join(pd.DataFrame(addnl))
