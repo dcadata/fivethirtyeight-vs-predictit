@@ -6,6 +6,7 @@ import requests
 
 _FORECAST_EXPRESSION = '_classic'
 _MIN_PROFIT_PER_SHARE = 0.075
+_SIDES = ('buy', 'sell')
 _CHAMBERS = dict(
     names=['senate', 'governor'],
     patterns=dict(
@@ -108,7 +109,7 @@ def create_fte_and_pi_comparison() -> pd.DataFrame:
     pi_data = get_pi_data()
     merged = pd.concat(merge_fte_and_pi(pi_data, chamber) for chamber in _CHAMBERS['names'])
     add_profit_columns(merged)
-    merged = pd.concat(add_action_columns(merged, side) for side in ('buy', 'sell'))
+    merged = pd.concat(add_action_columns(merged, side) for side in _SIDES)
     merged = merged[merged.actionProfit >= _MIN_PROFIT_PER_SHARE].sort_values('actionSide').sort_values(
         'actionProfit', ascending=False)
 
