@@ -72,6 +72,7 @@ def merge_fte_and_pi(pi_data: pd.DataFrame, chamber: str) -> pd.DataFrame:
             .drop(columns=['state', 'bestSellYesCostD', 'bestSellNoCostR', 'bestSellYesCostR', 'bestSellNoCostD'])
             .rename(columns=dict(winner_Dparty='fteD', winner_Rparty='fteR'))
     )
+    merged['side'] = 'buy'
     return merged
 
 
