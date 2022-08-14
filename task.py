@@ -68,11 +68,8 @@ def merge_fte_and_pi(pi_data: pd.DataFrame, chamber: str) -> pd.DataFrame:
     pi = _separate_by_party('Democratic').merge(_separate_by_party('Republican'), on=[
         'mshortName', 'murl', 'state', 'seat'], suffixes=('D', 'R'))
 
-    merged = (
-        pi.merge(fte, on='state')
-            .drop(columns=['state'])
-            .rename(columns=dict(winner_Dparty='fteD', winner_Rparty='fteR'))
-    )
+    merged = pi.merge(fte, on='state').drop(columns=['state']).rename(columns=dict(
+        winner_Dparty='fteD', winner_Rparty='fteR'))
     return merged
 
 
