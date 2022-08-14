@@ -4,7 +4,7 @@ from datetime import datetime
 import pandas as pd
 import requests
 
-_FORECAST_EXPRESSION = '_classic'
+_FORECAST_EXPRESSION = '_deluxe'
 _MIN_PROFIT_PER_SHARE = 0.075
 _SIDES = ('buy', 'sell')
 _CHAMBERS = dict(
