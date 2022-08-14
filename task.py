@@ -5,6 +5,7 @@ import pandas as pd
 import requests
 
 _FORECAST_EXPRESSION = '_classic'
+_MIN_PROFIT_PER_SHARE = 0.05
 _CHAMBERS = dict(
     names=['senate', 'governor'],
     patterns=dict(
@@ -95,7 +96,7 @@ def add_profit_columns_to_merged(merged: pd.DataFrame) -> pd.DataFrame:
         buyActionProfit=transposed[i].max(),
     ) for i in transposed]
     merged = merged.join(pd.DataFrame(addnl))
-    merged = merged[merged.buyActionProfit > 0].sort_values('buyActionProfit', ascending=False)
+    merged = merged[merged.buyActionProfit >= _MIN_PROFIT_PER_SHARE].sort_values('buyActionProfit', ascending=False)
     return merged
 
 
@@ -105,6 +106,8 @@ def compare_fte_and_pi() -> None:
     merged = add_profit_columns_to_merged(merged)
 
     html = open('templates/page.html').read().format(
+        forecast_expression=_FORECAST_EXPRESSION[1:],
+        min_profit_per_share=_MIN_PROFIT_PER_SHARE,
         data='\n'.join(open('templates/item.html').read().format(**record) for record in merged.to_dict('records')),
         last_updated=datetime.now().strftime('%d %B %Y %H:%M'),
     )
