@@ -13,7 +13,7 @@
 }
 .gridlinks {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-gap: 12px;
     background-color: #fff0e6;
     border-style: solid none solid none;
