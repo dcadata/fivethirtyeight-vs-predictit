@@ -2,8 +2,8 @@ name: Refresh Opportunities
 
 on:
   workflow_dispatch:
-#  schedule:
-#    - cron: '58 * * * *'
+  schedule:
+    - cron: '58 * * * *'
 
 jobs:
   scheduled:
