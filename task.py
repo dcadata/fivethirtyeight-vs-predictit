@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 
 _FORECAST_EXPRESSION = '_classic'
-_MIN_PROFIT_PER_SHARE = 0.05
+_MIN_PROFIT_PER_SHARE = 0.075
 _CHAMBERS = dict(
     names=['senate', 'governor'],
     patterns=dict(
