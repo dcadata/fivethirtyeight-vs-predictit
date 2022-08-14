@@ -1,0 +1,98 @@
+.griddefault {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 12px;
+    padding: 0px 0px 3px 0px;
+}
+.gridheader {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 12px;
+    padding: 0px 0px 5px 0px;
+    background-color: #e0ebeb;
+}
+.gridlinks {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 12px;
+    background-color: #fff0e6;
+    border-style: solid none solid none;
+    border-width: 2px 0px 2px 0px;
+    padding: 2px 0px 7px 0px;
+    font-size: 12px;
+}
+.gridfooter {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 4px;
+    padding: 0px 0px 5px 0px;
+    background-color: #f6fff6;
+    font-size: 12px;
+}
+
+
+.focalpoint {
+  background-color: black;
+  color: yellow;
+  padding: 0px 15px 0px 15px;
+}
+.focalpoint a {
+  background-color: black;
+  color: yellow;
+}
+
+.buydiv:hover {color: black}
+.buydiv:hover a {color: black}
+.buydiv:hover h1 {color: black}
+.buydiv:hover h2 {color: black}
+.buydiv:hover h3 {color: black}
+.buydiv a {background-color: #FFFFCC}
+.buydiv:hover a {
+    background-color: yellow;
+    color:black;
+}
+
+.links:hover {color: black}
+.links:hover h1 {color:black}
+.links:hover h2 {color:black}
+.links:hover h3 {color:black}
+.links a {background-color: #ffe0cc}
+.links:hover a {
+    background-color: #ffc299;
+    color:black;
+}
+
+.selldiv {
+    padding: 2px 2px 2px 5px;
+    background-color: #f0f0f5;
+    border-style: none none none solid;
+    border-width: 0px 0px 0px 2px;
+}
+.selldiv:hover {color: black}
+.selldiv:hover h1 {color:black}
+.selldiv:hover h2 {color:black}
+.selldiv:hover h3 {color:black}
+.selldiv a {background-color: #e6e6ff}
+.selldiv:hover a {
+    background-color: #ccccff;
+    color:black;
+}
+
+
+a {
+  background-color: #FFFFCC;
+  color: #3d3d3d;
+}
+
+a:hover {
+  background-color: yellow;
+  color: black;
+  text-decoration: overline;
+}
+
+a:active {text-decoration: underline}
+
+body {
+  background-color: #FFFFFF;
+  color: #3d3d3d;
+}
