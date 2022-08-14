@@ -105,10 +105,14 @@ def add_profit_columns_to_merged(merged: pd.DataFrame) -> pd.DataFrame:
     return merged
 
 
-def compare_fte_and_pi() -> None:
+def create_fte_and_pi_comparison() -> pd.DataFrame:
     pi_data = get_pi_data()
     merged = pd.concat(merge_fte_and_pi(pi_data, chamber) for chamber in _CHAMBERS['names'])
     merged = add_profit_columns_to_merged(merged)
+    return merged
+
+
+def create_html_output(merged: pd.DataFrame) -> None:
     summary = merged.groupby('buyActionRec', as_index=False).agg(dict(
         murl='count', seat='</li><li>'.join)).sort_values(by='murl', ascending=False)
     forecast_exp_title = _FORECAST_EXPRESSION[1:].title()
@@ -129,5 +133,9 @@ def compare_fte_and_pi() -> None:
         f.write(html)
 
 
+def main():
+    create_html_output(create_fte_and_pi_comparison())
+
+
 if __name__ == '__main__':
-    compare_fte_and_pi()
+    main()
