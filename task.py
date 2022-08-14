@@ -57,7 +57,7 @@ def _get_fte_data(chamber: str) -> pd.DataFrame:
     return fte
 
 
-def merge_data(pi_data: pd.DataFrame, chamber: str) -> pd.DataFrame:
+def merge_fte_and_pi(pi_data: pd.DataFrame, chamber: str) -> pd.DataFrame:
     chamber = chamber.lower()
     pi = _filter_pi_data(pi_data, chamber)
     pi = pi[pi.state.notna()].copy()
@@ -103,7 +103,7 @@ def add_profit_columns_to_merged(merged: pd.DataFrame) -> pd.DataFrame:
 
 def compare_fte_and_pi() -> None:
     pi_data = get_pi_data()
-    merged = pd.concat(merge_data(pi_data, chamber) for chamber in _CHAMBERS['names'])
+    merged = pd.concat(merge_fte_and_pi(pi_data, chamber) for chamber in _CHAMBERS['names'])
     merged = add_profit_columns_to_merged(merged)
 
     html = open('templates/page.html').read().format(
