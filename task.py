@@ -7,6 +7,7 @@ import requests
 _FORECAST_EXPRESSION = '_deluxe'
 _MIN_PROFIT_PER_SHARE = 0.075
 _SIDES = ('buy', 'sell')
+_FTE_BASE_URL = 'https://projects.fivethirtyeight.com/2022-general-election-forecast-data/'
 _CHAMBERS = dict(
     names=['senate', 'governor'],
     patterns=dict(
@@ -50,8 +51,7 @@ def _filter_pi_data(pi_data: pd.DataFrame, chamber: str) -> pd.DataFrame:
 
 def _get_fte_data(chamber: str) -> pd.DataFrame:
     filename = _CHAMBERS['filenames'][chamber]
-    base_url = 'https://projects.fivethirtyeight.com/2022-general-election-forecast-data/'
-    fte = pd.read_csv(base_url + filename, usecols=['district', 'expression', 'winner_Dparty', 'winner_Rparty'])
+    fte = pd.read_csv(_FTE_BASE_URL + filename, usecols=['district', 'expression', 'winner_Dparty', 'winner_Rparty'])
     fte = fte[fte.expression == _FORECAST_EXPRESSION].drop_duplicates(keep='first', subset='district')
     fte['state'] = fte.district.apply(lambda x: x.split('-', 1)[0])
     fte = fte.drop(columns=['expression', 'district'])
