@@ -107,13 +107,13 @@ def create_fte_and_pi_comparison() -> pd.DataFrame:
     merged = pd.concat(merge_fte_and_pi(pi_data, chamber) for chamber in _CHAMBERS['names'])
     add_profit_columns(merged)
     merged = pd.concat(add_action_columns(merged, side) for side in _SIDES)
-    merged = merged[merged.actionProfit >= _MIN_PROFIT_PER_SHARE].sort_values(
-        'actionProfit', ascending=False).sort_values('actionSide')
-
+    merged = merged[merged.actionProfit >= _MIN_PROFIT_PER_SHARE].copy()
+    
     merged.fteD = merged.fteD.round(2)
     merged.fteR = merged.fteR.round(2)
     merged.actionProfit = merged.actionProfit.round(2)
-
+    
+    merged = merged.sort_values('actionProfit', ascending=False).sort_values('actionSide')
     return merged
 
 
