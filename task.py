@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 
 _FORECAST_EXPRESSION = '_deluxe'
-_MIN_PROFIT_PER_SHARE = 0.075
+_MIN_PROFIT_PER_SHARE = 0.05
 _SIDES = ('buy', 'sell')
 _FTE_BASE_URL = 'https://projects.fivethirtyeight.com/2022-general-election-forecast-data/'
 _CHAMBERS = dict(
