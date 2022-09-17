@@ -108,18 +108,18 @@ def create_fte_and_pi_comparison() -> pd.DataFrame:
     add_profit_columns(merged)
     merged = pd.concat(add_action_columns(merged, side) for side in _SIDES)
     merged = merged[merged.actionProfit >= _MIN_PROFIT_PER_SHARE].copy()
-    
+
     merged.fteD = merged.fteD.round(2)
     merged.fteR = merged.fteR.round(2)
     merged.actionProfit = merged.actionProfit.round(2)
-    
+
     merged = merged.sort_values('actionProfit', ascending=False).sort_values('actionSide')
     return merged
 
 
 def create_html_output(merged: pd.DataFrame) -> None:
-    summary = merged.groupby('actionRec', as_index=False).agg(dict(
-        murl='count', seat=', '.join)).sort_values(by='murl', ascending=False)
+    summary = merged.groupby('actionRec', as_index=False).agg(dict(murl='count', seat=', '.join)).sort_values(
+        by='murl', ascending=False)
     forecast_exp_title = _FORECAST_EXPRESSION[1:].title()
 
     market_item_template = open('templates/market_item.html').read()
