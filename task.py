@@ -148,7 +148,15 @@ def create_html_output(merged: pd.DataFrame) -> None:
 
 
 def main():
-    create_html_output(create_fte_and_pi_comparison())
+    merged = create_fte_and_pi_comparison()
+    create_html_output(merged)
+
+    for col in merged.columns:
+        if col.startswith('profit_'):
+            merged[col] = merged[col].round(2)
+    merged = pd.concat(
+        merged[merged.actionSide == side].sort_values('actionProfit', ascending=False) for side in ('buy', 'sell'))
+    merged.to_csv('data/opportunities.csv', index=False)
 
 
 if __name__ == '__main__':
