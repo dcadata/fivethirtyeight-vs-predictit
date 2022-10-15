@@ -3,7 +3,8 @@ name: Refresh Opportunities
 on:
   workflow_dispatch:
   schedule:
-    - cron: '58 * * * *'
+    - cron: '58 * 15-31 10,11 *'
+    - cron: '58 * 1-8 11 *'
 
 jobs:
   scheduled:
