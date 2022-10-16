@@ -113,7 +113,8 @@ def create_fte_and_pi_comparison() -> pd.DataFrame:
     merged.fteR = merged.fteR.round(2)
     merged.actionProfit = merged.actionProfit.round(2)
 
-    merged = merged.sort_values('actionProfit', ascending=False).sort_values('actionSide')
+    merged = pd.concat(
+        merged[merged.actionSide == side].sort_values('actionProfit', ascending=False) for side in ('buy', 'sell'))
     return merged
 
 
@@ -154,8 +155,6 @@ def main():
     for col in merged.columns:
         if col.startswith('profit_'):
             merged[col] = merged[col].round(2)
-    merged = pd.concat(
-        merged[merged.actionSide == side].sort_values('actionProfit', ascending=False) for side in ('buy', 'sell'))
     merged.to_csv('data/opportunities.csv', index=False)
 
 
