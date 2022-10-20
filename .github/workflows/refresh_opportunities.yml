@@ -1,0 +1,26 @@
+name: Refresh Opportunities
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '58 * 15-31 10 *'
+    - cron: '58 * 1-8 11 *'
+
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - run: pip3 install -r requirements.txt
+      - run: python task.py
+      - name: Commit and push if changed
+        run: |-
+          git config user.name "Actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          timestamp=$(date -u)
+          git commit -m "Refreshed: ${timestamp}" || exit 0
+          git push
