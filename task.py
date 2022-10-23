@@ -118,7 +118,7 @@ def create_fte_and_pi_comparison() -> pd.DataFrame:
     return merged
 
 
-def create_html_output(merged: pd.DataFrame) -> None:
+def create_html_page(merged: pd.DataFrame) -> None:
     summary = merged.groupby('actionRec', as_index=False).agg(dict(murl='count', seat=', '.join)).sort_values(
         by='murl', ascending=False)
     forecast_exp_title = _FORECAST_EXPRESSION[1:].title()
@@ -148,14 +148,17 @@ def create_html_output(merged: pd.DataFrame) -> None:
         f.write(html)
 
 
-def main():
-    merged = create_fte_and_pi_comparison()
-    create_html_output(merged)
-
+def create_csv(merged: pd.DataFrame) -> None:
     for col in merged.columns:
         if col.startswith('profit_'):
             merged[col] = merged[col].round(2)
     merged.to_csv('data/opportunities.csv', index=False)
+
+
+def main():
+    merged = create_fte_and_pi_comparison()
+    create_html_page(merged)
+    create_csv(merged)
 
 
 if __name__ == '__main__':
