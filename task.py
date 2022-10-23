@@ -114,7 +114,7 @@ def create_fte_and_pi_comparison() -> pd.DataFrame:
     merged.actionProfit = merged.actionProfit.round(2)
 
     merged = pd.concat(
-        merged[merged.actionSide == side].sort_values('actionProfit', ascending=False) for side in ('buy', 'sell'))
+        merged[merged.actionSide == side].sort_values('actionProfit', ascending=False) for side in _SIDES)
     return merged
 
 
